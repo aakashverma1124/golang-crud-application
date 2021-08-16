@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"go-crud/models"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 // response format
@@ -75,3 +77,29 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	// send the response
 	json.NewEncoder(w).Encode(res)
 }
+
+// GetUser will return a single user by its id
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	// get the userid from the request params, key is "id"
+	params := mux.Vars(r)
+
+	// convert the id type from string to int
+	id, err := strconv.Atoi(params["id"])
+
+	if err != nil {
+		log.Fatalf("Unable to convert the string into int.  %v", err)
+	}
+
+	// call the getUser function with user id to retrieve a single user
+	user, err := getUser(int64(id))
+
+	if err != nil {
+		log.Fatalf("Unable to get user. %v", err)
+	}
+
+	// send the response
+	json.NewEncoder(w).Encode(user)
+}
+
