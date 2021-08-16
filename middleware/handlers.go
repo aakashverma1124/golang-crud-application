@@ -103,3 +103,17 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// GetAllUser will return all the users
+func GetAllUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	// get all the users in the db
+	users, err := getAllUsers()
+
+	if err != nil {
+		log.Fatalf("Unable to get all user. %v", err)
+	}
+
+	// send all the users as response
+	json.NewEncoder(w).Encode(users)
+}
